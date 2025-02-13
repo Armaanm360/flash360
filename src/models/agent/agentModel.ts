@@ -106,6 +106,13 @@ class AgentModel extends Schema {
 
     return data;
   }
+  public async insertUserPoints(payload: any) {
+    const data = await this.db('user_points')
+      .withSchema(this.USER_SCHEMA)
+      .insert(payload);
+
+    return data;
+  }
 
   // all after sales lead list
   public async getClientProperties({ limit, skip }: ICommonSource) {
@@ -200,6 +207,14 @@ class AgentModel extends Schema {
       .withSchema(this.PROPERTY_SCHEMA)
       .select('*')
       .where({ property_id: id });
+  }
+  public async getUserCurrentResult(user_id: Number, topic_id: Number) {
+    return await this.db('participant_results')
+      .withSchema(this.USER_SCHEMA)
+      .select('*')
+      .where({ topic_id: topic_id })
+      .andWhere({ participant_id: user_id })
+      .first();
   }
 
   //get all agents

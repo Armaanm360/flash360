@@ -94,6 +94,14 @@ class AgentModel extends schema_1.default {
             return data;
         });
     }
+    insertUserPoints(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.db('user_points')
+                .withSchema(this.USER_SCHEMA)
+                .insert(payload);
+            return data;
+        });
+    }
     // all after sales lead list
     getClientProperties({ limit, skip }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -184,6 +192,16 @@ class AgentModel extends schema_1.default {
                 .withSchema(this.PROPERTY_SCHEMA)
                 .select('*')
                 .where({ property_id: id });
+        });
+    }
+    getUserCurrentResult(user_id, topic_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db('participant_results')
+                .withSchema(this.USER_SCHEMA)
+                .select('*')
+                .where({ topic_id: topic_id })
+                .andWhere({ participant_id: user_id })
+                .first();
         });
     }
     //get all agents

@@ -112,7 +112,7 @@ class ClientPropertyService extends abstract_service_1.default {
     }
     insertAnswer(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const answers = req.body; // Expecting an array of answers
+            const answers = req.body.data; // Expecting an array of answers
             const model = this.Model.agentModel(); // Get the property model
             // console.log('req.employee.id', req.employee.id);
             if (!Array.isArray(answers) || answers.length === 0) {
@@ -133,8 +133,18 @@ class ClientPropertyService extends abstract_service_1.default {
                 // Add user_id from req.employee.id
                 // answer.user_id = req.employee.id;
                 answer.user_id = req.employee.id;
+                answer.topic_id = req.body.topic_id;
             }
             yield model.insertAnswer(answers);
+            const getCurrentResult = yield model.getUserCurrentResult(req.employee.id, req.body.topic_id);
+            console.log(getCurrentResult);
+            const finalPoints = Number(getCurrentResult.correct_percentage * 100);
+            const points = {
+                user_id: req.employee.id,
+                topic_id: req.employee.id,
+                points: finalPoints,
+            };
+            yield model.insertUserPoints(points);
             return {
                 success: true,
                 code: 200,

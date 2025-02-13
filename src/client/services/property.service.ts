@@ -8,6 +8,7 @@ import {
   REGARD_MESSAGE,
 } from '../../utils/miscellaneous/constants';
 import { welcomeMessage } from '../../utils/templates/propertyListingMessage';
+import { number } from 'joi';
 
 /**
  * Service class to handle client property operations.
@@ -135,7 +136,7 @@ class ClientPropertyService extends AbstractServices {
     };
   }
   public async insertAnswer(req: Request) {
-    const answers = req.body; // Expecting an array of answers
+    const answers = req.body.data; // Expecting an array of answers
     const model = this.Model.agentModel(); // Get the property model
 
     // console.log('req.employee.id', req.employee.id);
@@ -160,9 +161,27 @@ class ClientPropertyService extends AbstractServices {
       // Add user_id from req.employee.id
       // answer.user_id = req.employee.id;
       answer.user_id = req.employee.id;
+      answer.topic_id = req.body.topic_id;
     }
 
     await model.insertAnswer(answers);
+
+    const getCurrentResult = await model.getUserCurrentResult(
+      req.employee.id,
+      req.body.topic_id
+    );
+
+    console.log(getCurrentResult);
+
+    const finalPoints = Number(getCurrentResult.correct_percentage * 100);
+
+    const points = {
+      user_id: req.employee.id,
+      topic_id: req.employee.id,
+      points: finalPoints,
+    };
+
+    await model.insertUserPoints(points);
 
     return {
       success: true,

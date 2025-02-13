@@ -38,7 +38,7 @@ class RootRouter {
     // Client-specific routes, currently without authentication middleware
     this.v1Router.use(
       '/client',
-      // this.authChecker.clientAuthChecker, // Uncomment to enable client authentication
+      this.authChecker.clientAuthChecker, // Uncomment to enable client authentication
       new ClientRouter().router
     );
 

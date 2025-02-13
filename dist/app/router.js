@@ -36,8 +36,7 @@ class RootRouter {
         // Common routes accessible to all users
         this.v1Router.use('/common', this.commonRouter.router);
         // Client-specific routes, currently without authentication middleware
-        this.v1Router.use('/client', 
-        // this.authChecker.clientAuthChecker, // Uncomment to enable client authentication
+        this.v1Router.use('/client', this.authChecker.clientAuthChecker, // Uncomment to enable client authentication
         new client_router_1.default().router);
         // Agent-specific routes with authentication checks19
         this.v1Router.use('/user-admin', this.authChecker.agentAuthChecker, // Middleware to ensure agent authentication
